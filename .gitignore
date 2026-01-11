@@ -1,0 +1,117 @@
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ===============================
+# Virtual Environments
+# ===============================
+.venv/
+venv/
+env/
+ENV/
+
+# ===============================
+# Environment Variables
+# ===============================
+.env
+.env.*
+!.env.example
+
+# ===============================
+# Flask / Server
+# ===============================
+instance/
+*.log
+logs/
+flask_session/
+
+# ===============================
+# Testing / Coverage
+# ===============================
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ===============================
+# Jupyter / Experiments
+# ===============================
+.ipynb_checkpoints/
+
+# ===============================
+# AI / LLM Artifacts
+# ===============================
+data/
+memory/
+vector_store/
+embeddings/
+cache/
+*.pkl
+*.joblib
+
+# ===============================
+# Model Files
+# ===============================
+models/*.bin
+models/*.pt
+models/*.onnx
+models/*.h5
+
+# ===============================
+# Tool / Agent Runtime Files
+# ===============================
+app/agent/__pycache__/
+app/orchestrator/__pycache__/
+app/tools/__pycache__/
+app/llm/__pycache__/
+app/prompts/__pycache__/
+app/utils/__pycache__/
+app/context/__pycache__/
+app/memory/__pycache__/
+app/api/__pycache__/
+
+# ===============================
+# OS Files
+# ===============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===============================
+# IDE / Editor
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===============================
+# Temporary Files
+# ===============================
+tmp/
+temp/
+*.tmp
+
+# ===============================
+# Secrets / Keys
+# ===============================
+*.pem
+*.key
+*.crt
+secrets/
+credentials.json
+
+# ===============================
+# Deployment
+# ===============================
+gunicorn.pid
+nohup.out
