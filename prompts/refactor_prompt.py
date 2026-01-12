@@ -1,4 +1,10 @@
-# prompts/refactor_prompt.py
+"""
+Refactor prompt builder.
+Uses rules from rules/refactor_rules.py.
+"""
+
+from rules.refactor_rules import get_refactor_rules
+
 
 def build_refactor_prompt(
     previous_draft: str,
@@ -18,12 +24,7 @@ def build_refactor_prompt(
             "content": (
                 "You are a refinement reasoning engine.\n"
                 "You are given a draft solution and verifier feedback.\n\n"
-                "Rules:\n"
-                "- Do NOT restate the entire solution unnecessarily.\n"
-                "- Do NOT mention the verifier or verification process.\n"
-                "- Do NOT expose internal reasoning instructions.\n"
-                "- Only improve or fix the draft where required.\n"
-                "- Preserve correct sections as-is.\n"
+                f"{get_refactor_rules()}"
             )
         },
         {

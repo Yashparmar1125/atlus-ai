@@ -59,12 +59,13 @@ class TaskAgent:
         self.writer_llm = get_llm("writing")
         self.logger.info("TaskAgent LLM instances initialized successfully")
 
-    def run(self, user_message: str) -> str:
+    def run(self, user_message: str, context_messages: list = None) -> str:
         """
         Process complex task request through full pipeline.
         
         Args:
             user_message: User's input request
+            context_messages: Pre-built context with memory (optional)
             
         Returns:
             Final polished response string
@@ -97,7 +98,7 @@ class TaskAgent:
             self.logger.info("\n" + "-" * 80)
             self.logger.info("STEP 3: REASONING")
             self.logger.info("-" * 80)
-            draft = self._execute_reasoning(intent, plan)
+            draft = self._execute_reasoning(intent, plan, context_messages=context_messages)
             self.logger.info(f"Draft generated: {len(draft)} characters")
             self.logger.debug(f"Draft preview (first 200 chars): {draft[:200]}...")
             
@@ -250,7 +251,7 @@ class TaskAgent:
     # ==========================================================
     # STEP 3 — REASONING (COMPREHENSIVE DRAFT)
     # ==========================================================
-    def _execute_reasoning(self, intent: dict, plan: List[str]) -> str:
+    def _execute_reasoning(self, intent: dict, plan: List[str], context_messages: list = None) -> str:
         """Generate comprehensive draft solution."""
         self.logger.debug("Formatting intent context...")
         constraints_str = (
@@ -268,11 +269,39 @@ class TaskAgent:
         self.logger.debug(f"Plan steps: {len(plan)}")
         
         self.logger.debug("Building reasoning prompt...")
-        prompt = build_reasoning_prompt(
+        base_prompt = build_reasoning_prompt(
             context=context,
             plan=plan
         )
-        self.logger.debug(f"Prompt messages: {len(prompt)} messages")
+        
+        # If context_messages (with memory) is provided, merge it with the reasoning prompt
+        if context_messages:
+            self.logger.debug(f"Using context_messages with {len(context_messages)} messages")
+            # Extract system messages and conversation history from context_messages
+            # The context_messages already includes system prompts, memory, and conversation history
+            # We'll prepend the reasoning-specific system message and merge conversation history
+            prompt = []
+            
+            # Add reasoning system message first
+            prompt.append(base_prompt[0])  # System message from reasoning prompt
+            
+            # Extract conversation history from context_messages (skip system messages)
+            conversation_history = [
+                msg for msg in context_messages 
+                if msg.get("role") in ["user", "assistant"]
+            ]
+            
+            if conversation_history:
+                self.logger.debug(f"Including {len(conversation_history)} conversation history messages")
+                prompt.extend(conversation_history)
+            
+            # Add the reasoning user message (with goal, constraints, plan)
+            prompt.append(base_prompt[1])  # User message from reasoning prompt
+        else:
+            prompt = base_prompt
+            self.logger.debug("No context_messages provided, using base reasoning prompt")
+        
+        self.logger.debug(f"Final prompt messages: {len(prompt)} messages")
         
         self.logger.info("Generating comprehensive draft solution...")
         reasoning_start = time.time()

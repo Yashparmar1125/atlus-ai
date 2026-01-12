@@ -28,12 +28,13 @@ class SimpleAgent:
         self.chat_llm = ChatLLM()
         self.logger.debug("SimpleAgent initialized")
     
-    def run(self, user_message: str) -> str:
+    def run(self, user_message: str, context_messages: list = None) -> str:
         """
         Process simple user message with minimal processing.
         
         Args:
             user_message: User's input message
+            context_messages: Pre-built context with memory (optional)
             
         Returns:
             Response string
@@ -42,8 +43,15 @@ class SimpleAgent:
         self.logger.info(f"SimpleAgent processing: {user_message[:50]}...")
         
         try:
-            # Build simple prompt
-            prompt = build_simple_prompt(user_message)
+            # Use context if provided, otherwise build simple prompt
+            if context_messages:
+                self.logger.debug("Using context messages with memory")
+                prompt = context_messages
+                # Add current user message
+                prompt.append({"role": "user", "content": user_message})
+            else:
+                # Build simple prompt without memory
+                prompt = build_simple_prompt(user_message)
             
             # Single LLM call for quick response
             response = self.chat_llm.generate(prompt)

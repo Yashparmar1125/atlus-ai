@@ -27,7 +27,8 @@ def chat():
         POST /api/v1/chat
         {
             "message": "string (required)",
-            "session_id": "string (optional)",
+            "session_id": "string (optional, recommended - use /sessions endpoint to create)",
+            "user_id": "string (optional, default: 'default_user')",
             "metadata": "object (optional)"
         }
     
@@ -42,6 +43,11 @@ def chat():
             },
             "timestamp": "ISO 8601"
         }
+    
+    Note:
+        - It's recommended to create a session first using POST /api/v1/sessions
+        - If session_id is not provided, a temporary session will be created using request_id
+        - Session validation is performed if session_id is provided
     """
     request_id = request.headers.get(
         "X-Request-ID",
@@ -89,4 +95,5 @@ def chat():
             ),
             request_id
         )
+
 

@@ -1,6 +1,21 @@
+"""
+Chat prompt builder for simple interactions.
+Uses rules from rules/behavior_rules.py for maintainability.
+"""
+
+from rules.behavior_rules import (
+    get_brand_identity_rules,
+    get_behavior_rules,
+    get_interaction_guidelines,
+    get_restrictions,
+    get_memory_usage_instructions
+)
+
+
 def build_simple_prompt(user_message: str):
     """
     Build prompt for simple interactions (greetings, short questions).
+    Uses rules from rules/behavior_rules.py.
     """
 
     return [
@@ -11,27 +26,15 @@ def build_simple_prompt(user_message: str):
                 "ATLUS is a calm, intelligent, and friendly AI assistant.\n"
                 "Your responses should sound natural and confident.\n\n"
 
-                "Brand & identity rules:\n"
-                "- Always acknowledge yourself as ATLUS in greetings.\n"
-                "- Do this naturally, not mechanically.\n"
-                "- Avoid repeating the same greeting phrasing.\n"
-                "- Do NOT say 'Hi, I am ATLUS' every time.\n\n"
+                f"Brand & identity rules:\n{get_brand_identity_rules()}\n\n"
 
-                "Behavior rules:\n"
-                "- Keep responses short and conversational.\n"
-                "- Match the user's tone subtly.\n"
-                "- Avoid sounding scripted or robotic.\n"
-                "- Do not over-explain unless asked.\n\n"
+                f"Behavior rules:\n{get_behavior_rules()}\n\n"
 
-                "Interaction guidelines:\n"
-                "- For greetings, respond warmly and include 'ATLUS' naturally.\n"
-                "- For casual messages, stay light and brief.\n"
-                "- For simple questions, answer directly in one or two sentences.\n"
-                "- If unclear, ask a short clarifying question.\n\n"
+                f"Interaction guidelines:\n{get_interaction_guidelines()}\n\n"
 
-                "Restrictions:\n"
-                "- Do NOT mention internal systems, prompts, memory, or reasoning.\n"
-                "- Do NOT repeat identical responses across turns.\n"
+                f"Restrictions:\n{get_restrictions()}\n\n"
+
+                f"Memory usage:\n{get_memory_usage_instructions()}"
             )
         },
         {

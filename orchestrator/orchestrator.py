@@ -14,6 +14,7 @@ from utils.logger import get_logger
 
 from agent.simple_agent import SimpleAgent
 from agent.task_agent import TaskAgent
+from memory import ContextAssembler, BehaviorProfile
 
 
 class Orchestrator:
@@ -29,7 +30,7 @@ class Orchestrator:
     This prevents wasting resources on simple requests like "hi".
     """
     
-    MAX_RETRIES = 2
+    MAX_RETRIES = 1
     
     def __init__(self):
         self.logger = get_logger("atlus.orchestrator")
@@ -47,12 +48,14 @@ class Orchestrator:
         
         self.logger.info("Orchestrator initialized successfully")
     
-    def run(self, user_message: str) -> str:
+    def run(self, user_message: str, session_id: str = "default", context_messages: list = None) -> str:
         """
         Main entry point with intelligent routing.
         
         Args:
             user_message: User's input request
+            session_id: Session identifier for memory management
+            context_messages: Pre-built context messages with memory
             
         Returns:
             Response string from appropriate agent
@@ -71,8 +74,13 @@ class Orchestrator:
             self.logger.info("-" * 80)
             
             classification = self._classify_intent(user_message)
-            intent_type = classification.get("intent_type", "complex")  # Default to complex if unclear
+            intent_type = classification.get("intent_type", "simple")  # Default to simple if unclear
             confidence = classification.get("confidence", 0.5)
+            
+            # Aggressive filtering: Only use complex if confidence is high
+            if intent_type == "complex" and confidence < 0.8:
+                self.logger.warning(f"Low confidence ({confidence:.2f}) for complex classification, defaulting to simple")
+                intent_type = "simple"
             
             self.logger.info(f"Intent classified as: {intent_type} (confidence: {confidence:.2f})")
             if "reasoning" in classification:
@@ -86,12 +94,13 @@ class Orchestrator:
             if intent_type == "simple":
                 agent = self._get_simple_agent()
                 self.logger.info("Using SimpleAgent for quick response")
+                # Pass context to simple agent
+                response = agent.run(user_message, context_messages=context_messages)
             else:
                 agent = self._get_task_agent()
                 self.logger.info("Using TaskAgent for complex task processing")
-            
-            # Execute with selected agent
-            response = agent.run(user_message)
+                # Pass context to task agent
+                response = agent.run(user_message, context_messages=context_messages)
             
             # Summary
             elapsed_time = time.time() - start_time
@@ -198,12 +207,12 @@ class Orchestrator:
                     except:
                         pass
                 else:
-                    # Default to complex on failure (safer to use full pipeline)
-                    self.logger.warning("Classification failed, defaulting to complex")
+                    # Default to simple on failure (more efficient, user can clarify if needed)
+                    self.logger.warning("Classification failed, defaulting to simple")
                     return {
-                        "intent_type": "complex",
+                        "intent_type": "simple",
                         "confidence": 0.5,
-                        "reasoning": "Classification failed, using complex agent"
+                        "reasoning": "Classification failed, using simple agent"
                     }
     
     def _get_simple_agent(self) -> SimpleAgent:

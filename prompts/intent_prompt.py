@@ -1,6 +1,13 @@
-# prompts/intent_prompt.py
+"""
+Intent extraction prompt.
+Uses rules from rules/json_schemas.py.
+"""
+
+from rules.json_schemas import get_intent_schema, get_json_output_instruction
+
 
 def build_intent_prompt(user_message: str):
+    """Build prompt for intent extraction."""
     return [
         {
             "role": "system",
@@ -8,8 +15,7 @@ def build_intent_prompt(user_message: str):
                 "You are an intent extraction engine.\n"
                 "Do NOT answer the user's question.\n"
                 "ONLY extract structured intent as JSON.\n\n"
-                "CRITICAL: Return ONLY valid JSON. No explanations, no markdown, no text before or after.\n"
-                "The output MUST be parseable JSON."
+                f"{get_json_output_instruction()}"
             )
         },
         {
@@ -19,19 +25,14 @@ def build_intent_prompt(user_message: str):
         {
             "role": "assistant",
             "content": (
-                "REQUIRED JSON structure:\n"
-                "{\n"
-                '  "goal": "string describing the main objective",\n'
-                '  "constraints": "string or array of strings describing limitations/requirements",\n'
-                '  "expected_output": "string describing what the final result should be"\n'
-                "}\n\n"
+                f"REQUIRED JSON structure:\n{get_intent_schema()}\n\n"
                 "Example:\n"
                 "{\n"
                 '  "goal": "Build a web application with authentication",\n'
                 '  "constraints": ["Must use Python", "Must be secure"],\n'
                 '  "expected_output": "A working web app with user login"\n'
                 "}\n\n"
-                "Return ONLY the JSON object. No markdown code blocks, no explanations."
+                f"{get_json_output_instruction()}"
             )
         }
     ]
