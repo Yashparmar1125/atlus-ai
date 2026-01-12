@@ -1,6 +1,14 @@
-# prompts/planner_prompt.py
+"""
+Planner prompt builder.
+Uses rules from rules/plan_constraints.py and rules/json_schemas.py.
+"""
+
+from rules.json_schemas import get_plan_schema, get_json_output_instruction
+from rules.plan_constraints import get_plan_constraints, get_plan_example
+
 
 def build_planner_prompt(intent_json: str):
+    """Build prompt for plan generation."""
     return [
         {
             "role": "system",
@@ -8,8 +16,7 @@ def build_planner_prompt(intent_json: str):
                 "You are a task planning engine.\n"
                 "Break the goal into ordered, actionable steps.\n"
                 "Do NOT solve the task - only create the plan.\n\n"
-                "CRITICAL: Return ONLY valid JSON. No explanations, no markdown, no text before or after.\n"
-                "The output MUST be parseable JSON."
+                f"{get_json_output_instruction()}"
             )
         },
         {
@@ -19,29 +26,10 @@ def build_planner_prompt(intent_json: str):
         {
             "role": "assistant",
             "content": (
-                "REQUIRED JSON structure:\n"
-                "{\n"
-                '  "plan": [\n'
-                '    "Step 1 description",\n'
-                '    "Step 2 description",\n'
-                '    "Step 3 description"\n'
-                "  ]\n"
-                "}\n\n"
-                "Rules:\n"
-                "- The 'plan' key MUST contain an array of strings\n"
-                "- Each step MUST be a clear, actionable string\n"
-                "- Steps MUST be in execution order\n"
-                "- Minimum 2 steps, maximum 3 steps\n\n"
-                "Example:\n"
-                "{\n"
-                '  "plan": [\n'
-                '    "Set up project structure and dependencies",\n'
-                '    "Design database schema",\n'
-                '    "Implement authentication endpoints",\n'
-                '    "Create frontend login interface"\n'
-                "  ]\n"
-                "}\n\n"
-                "Return ONLY the JSON object. No markdown code blocks, no explanations."
+                f"REQUIRED JSON structure:\n{get_plan_schema()}\n\n"
+                f"{get_plan_constraints()}\n\n"
+                f"{get_plan_example()}\n\n"
+                f"{get_json_output_instruction()}"
             )
         }
     ]

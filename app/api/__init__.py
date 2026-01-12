@@ -17,3 +17,4 @@ def init_api(app: Flask):
     """
     register_v1_api(app)
 
+

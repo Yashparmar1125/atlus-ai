@@ -28,3 +28,4 @@ def health():
     logger.debug("Health check requested")
     return jsonify(HealthService.get_health_status()), 200
 
+

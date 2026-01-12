@@ -7,6 +7,7 @@ from flask import Flask
 
 from app.api.v1.routes.chat import chat_bp
 from app.api.v1.routes.health import health_bp
+from app.api.v1.routes.session import session_bp
 
 
 def register_routes(app: Flask):
@@ -18,7 +19,9 @@ def register_routes(app: Flask):
     """
     app.register_blueprint(chat_bp, url_prefix="/api/v1")
     app.register_blueprint(health_bp, url_prefix="/api/v1")
+    app.register_blueprint(session_bp, url_prefix="/api/v1")
 
 
-__all__ = ["register_routes", "chat_bp", "health_bp"]
+__all__ = ["register_routes", "chat_bp", "health_bp", "session_bp"]
+
 
