@@ -109,3 +109,4 @@ class TestIntentLLM:
         # Intent config doesn't have "reasoning" key, should default to False
         assert call_kwargs["extra_body"]["reasoning"]["enabled"] == False
 
+

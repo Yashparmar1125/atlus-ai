@@ -1,4 +1,4 @@
-def build_simple_prompt(self, user_message: str):
+def build_simple_prompt(user_message: str):
     """
     Build prompt for simple interactions (greetings, short questions).
     """

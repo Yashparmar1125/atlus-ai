@@ -1,23 +1,18 @@
-# llm/verifier_llm.py
+# llm/intent_llm.py
 
-import os
 from openai import OpenAI
+from llm.base import BaseLLM
+from llm.config import MODELS, OPENROUTER_BASE_URL
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-from app.llm.base import BaseLLM
-from app.llm.config import MODELS, OPENROUTER_BASE_URL
-
-
-class VerifierLLM(BaseLLM):
-    """
-    Critique / verification LLM.
-    Returns structured feedback about errors, gaps, or risks.
-    """
-
+class IntentLLM(BaseLLM):
     def __init__(self):
-        self.cfg = MODELS["verification"]
+        self.cfg = MODELS["intent"]
         self.client = OpenAI(
             base_url=OPENROUTER_BASE_URL,
-            api_key=os.getenv("OPENROUTER_API_KEY"),
+            api_key=os.getenv("OPENROUTER_API_KEY")
         )
 
     def generate(self, messages, **kwargs) -> str:
@@ -28,7 +23,6 @@ class VerifierLLM(BaseLLM):
             max_tokens=self.cfg["max_tokens"],
             extra_body={
                 "reasoning": {"enabled": self.cfg.get("reasoning", False)}
-            },
+            }
         )
-
         return response.choices[0].message.content

@@ -1,7 +1,6 @@
-from app.agent.agent import Agent
+from orchestrator.orchestrator import Orchestrator
 
 
-
-agent = Agent()
-response = agent.run("I want to build a web application with a database and a user authentication system and a chatbot")
+orchestrator = Orchestrator()
+response = orchestrator.run("I want to build a web application with a database and a user authentication system and a chatbot")
 print(response)

@@ -6,7 +6,7 @@ from flask import request
 from typing import Dict, Any, Type
 from pydantic import BaseModel, ValidationError
 
-from app.api.errors import APIError
+from app.api.v1.errors import APIError
 
 
 def validate_request(schema: Type[BaseModel], flask_request) -> Dict[str, Any]:
@@ -60,4 +60,5 @@ def validate_request(schema: Type[BaseModel], flask_request) -> Dict[str, Any]:
             error_code="VALIDATION_ERROR",
             details=errors
         )
+
 

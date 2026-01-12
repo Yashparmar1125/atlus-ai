@@ -9,26 +9,26 @@ import time
 from typing import List
 
 # LLMs - Use router for centralized LLM management
-from app.llm.router import get_llm
+from llm.router import get_llm
 
 # Prompts
-from app.prompts.intent_prompt import build_intent_prompt
-from app.prompts.planner_prompt import build_planner_prompt
-from app.prompts.reasoning_prompt import build_reasoning_prompt
-from app.prompts.verifier_prompt import build_verifier_prompt
-from app.prompts.refactor_prompt import build_refactor_prompt
-from app.prompts.writer_prompt import build_writer_prompt
+from prompts.intent_prompt import build_intent_prompt
+from prompts.planner_prompt import build_planner_prompt
+from prompts.reasoning_prompt import build_reasoning_prompt
+from prompts.verifier_prompt import build_verifier_prompt
+from prompts.refactor_prompt import build_refactor_prompt
+from prompts.writer_prompt import build_writer_prompt
 
 # Parsers
-from app.utils.parsers.json_parser import parse_json, JSONParseError
-from app.utils.parsers.plan_parser import parse_plan, PlanParseError
+from utils.parsers.json_parser import parse_json, JSONParseError
+from utils.parsers.plan_parser import parse_plan, PlanParseError
 
 # Validators
-from app.utils.validators.intent_validator import validate_intent, IntentValidationError
-from app.utils.validators.plan_validator import validate_plan, PlanValidationError
+from utils.validators.intent_validator import validate_intent, IntentValidationError
+from utils.validators.plan_validator import validate_plan, PlanValidationError
 
 # Logging
-from app.utils.logger import get_logger
+from utils.logger import get_logger
 
 
 class TaskAgent:
@@ -470,4 +470,5 @@ class TaskAgent:
         self.logger.debug(f"Repaired output length: {len(repaired)} characters")
         
         return repaired
+
 

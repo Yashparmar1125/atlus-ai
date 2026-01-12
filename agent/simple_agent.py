@@ -4,9 +4,9 @@ Handles greetings, simple questions, and casual conversation.
 Uses minimal processing for quick responses.
 """
 
-from app.llm.chat_llm import ChatLLM
-from app.prompts.chat_prompt import build_simple_prompt
-from app.utils.logger import get_logger
+from llm.chat_llm import ChatLLM
+from prompts.chat_prompt import build_simple_prompt
+from utils.logger import get_logger
 import time
 
 

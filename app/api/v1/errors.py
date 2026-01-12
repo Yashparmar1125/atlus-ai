@@ -102,3 +102,4 @@ def register_error_handlers(app):
             "request_id": request_id
         }), 500
 
+

@@ -3,8 +3,8 @@
 import os
 from openai import OpenAI
 
-from app.llm.base import BaseLLM
-from app.llm.config import MODELS, OPENROUTER_BASE_URL
+from llm.base import BaseLLM
+from llm.config import MODELS, OPENROUTER_BASE_URL
 
 
 class WriterLLM(BaseLLM):

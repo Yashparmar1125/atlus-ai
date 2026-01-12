@@ -1,8 +1,8 @@
 # llm/planning_llm.py
 
 from openai import OpenAI
-from app.llm.base import BaseLLM
-from app.llm.config import MODELS, OPENROUTER_BASE_URL
+from llm.base import BaseLLM
+from llm.config import MODELS, OPENROUTER_BASE_URL
 import os
 from dotenv import load_dotenv
 load_dotenv()

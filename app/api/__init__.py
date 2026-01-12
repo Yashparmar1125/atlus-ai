@@ -1,21 +1,19 @@
 """
 API package initialization.
+Registers all API versions and their blueprints.
 """
 
 from flask import Flask
 
-from app.api.chat import chat_bp
-from app.api.errors import register_error_handlers
-from app.api.middleware import register_middleware
-
-
-def register_blueprints(app: Flask):
-    """Register all API blueprints."""
-    app.register_blueprint(chat_bp, url_prefix='/api/v1')
+from app.api.v1 import register_v1_api
 
 
 def init_api(app: Flask):
-    """Initialize API components."""
-    register_blueprints(app)
-    register_error_handlers(app)
-    register_middleware(app)
+    """
+    Initialize all API versions.
+    
+    Args:
+        app: Flask application instance
+    """
+    register_v1_api(app)
+

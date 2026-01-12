@@ -1,10 +1,10 @@
 # llm/router.py
 
-from app.llm.intent_llm import IntentLLM
-from app.llm.planner_llm import PlannerLLM
-from app.llm.reasoning_llm import ReasoningLLM
-from app.llm.verifier_llm import VerifierLLM
-from app.llm.writer_llm import WriterLLM
+from llm.intent_llm import IntentLLM
+from llm.planner_llm import PlannerLLM
+from llm.reasoning_llm import ReasoningLLM
+from llm.verifier_llm import VerifierLLM
+from llm.writer_llm import WriterLLM
 
 def get_llm(role: str):
     """

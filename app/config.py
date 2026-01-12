@@ -4,6 +4,8 @@ Application configuration.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()   
 
 
 class Config:
@@ -45,4 +47,5 @@ class TestingConfig(Config):
     DEBUG = True
     TESTING = True
     SECRET_KEY = 'test-secret-key'
+
 

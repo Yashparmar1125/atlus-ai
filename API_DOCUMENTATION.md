@@ -261,3 +261,4 @@ gunicorn -w 4 -b 0.0.0.0:5000 "app.server:create_app()"
 - `RATE_LIMIT_REQUESTS`: Max requests per window (default: 100)
 - `RATE_LIMIT_WINDOW`: Time window in seconds (default: 60)
 
+

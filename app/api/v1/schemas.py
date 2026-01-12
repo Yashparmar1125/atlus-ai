@@ -47,3 +47,4 @@ class ErrorResponseSchema(BaseModel):
     timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat() + "Z")
     request_id: Optional[str] = Field(None, description="Request identifier")
 
+

@@ -1,14 +1,17 @@
 """
-Flask application factory and server bootstrap.
-Industry-standard Flask application setup.
+Flask application factory.
+Industry-standard application setup with clean architecture.
 """
 
 import os
 from flask import Flask, jsonify
-from flask_cors import CORS
 
-from app.utils.logger import get_logger
+from app.config import DevelopmentConfig, ProductionConfig, TestingConfig
+from app.core.extensions import init_extensions
 from app.api import init_api
+from app.utils.logger import get_logger
+from dotenv import load_dotenv
+load_dotenv()
 
 logger = get_logger("atlus.server")
 
@@ -27,32 +30,37 @@ def create_app(config_name: str = None) -> Flask:
     
     # Load configuration
     config_name = config_name or os.getenv('FLASK_ENV', 'development')
-    
-    # Import config - use direct import since config.py is in same directory
-    import importlib
-    config_module = importlib.import_module('app.config')
-    
     config_map = {
-        'development': config_module.DevelopmentConfig,
-        'production': config_module.ProductionConfig,
-        'testing': config_module.TestingConfig
+        'development': DevelopmentConfig,
+        'production': ProductionConfig,
+        'testing': TestingConfig
     }
     
-    app.config.from_object(config_map.get(config_name.lower(), config_module.DevelopmentConfig))
+    config_class = config_map.get(config_name.lower(), DevelopmentConfig)
+    app.config.from_object(config_class)
     
-    # Initialize CORS
-    CORS(app, resources={
-        r"/api/*": {
-            "origins": "*",
-            "methods": ["GET", "POST", "OPTIONS"],
-            "allow_headers": ["Content-Type", "Authorization", "X-Request-ID"]
-        }
-    })
+    logger.info(f"Loading configuration: {config_class.__name__}")
     
-    # Initialize API
+    # Initialize extensions (CORS, etc.)
+    init_extensions(app)
+    
+    # Initialize API (routes, error handlers, middleware)
     init_api(app)
     
-    # Root endpoint
+    # Register root endpoints
+    register_root_routes(app)
+    
+    logger.info("Flask application created successfully")
+    return app
+
+
+def register_root_routes(app: Flask):
+    """
+    Register root-level routes.
+    
+    Args:
+        app: Flask application instance
+    """
     @app.route('/', methods=['GET'])
     def root():
         """Root endpoint with API information."""
@@ -62,11 +70,11 @@ def create_app(config_name: str = None) -> Flask:
             "status": "operational",
             "endpoints": {
                 "chat": "/api/v1/chat",
-                "health": "/api/v1/health"
+                "health": "/api/v1/health",
+                "docs": "/api/v1/docs"
             }
         }), 200
-    
-    # API documentation endpoint
+
     @app.route('/api/v1/docs', methods=['GET'])
     def api_docs():
         """API documentation endpoint."""
@@ -100,14 +108,12 @@ def create_app(config_name: str = None) -> Flask:
                     "response": {
                         "status": "healthy",
                         "service": "atlus-api",
+                        "version": "1.0.0",
                         "timestamp": "ISO 8601"
                     }
                 }
             }
         }), 200
-    
-    logger.info("Flask application created successfully")
-    return app
 
 
 def run_server(host: str = '0.0.0.0', port: int = 5000, debug: bool = False):
@@ -121,8 +127,12 @@ def run_server(host: str = '0.0.0.0', port: int = 5000, debug: bool = False):
     """
     app = create_app()
     
-    logger.info(f"Starting ATLUS API server on {host}:{port}")
-    logger.info(f"Debug mode: {debug}")
+    logger.info("=" * 80)
+    logger.info(f"Starting ATLUS API server")
+    logger.info(f"Host: {host}")
+    logger.info(f"Port: {port}")
+    logger.info(f"Debug: {debug}")
+    logger.info("=" * 80)
     
     app.run(
         host=host,
@@ -138,4 +148,3 @@ if __name__ == '__main__':
         port=int(os.getenv('FLASK_PORT', 5000)),
         debug=os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
     )
-
